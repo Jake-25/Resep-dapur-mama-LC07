@@ -11,6 +11,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = htmlspecialchars($_POST["username"]);
     $password = htmlspecialchars($_POST["password"]);
 
+    if (!validateUsername($username)) {
+        echo "Invalid username format. Please use only letters, numbers, and underscores.";
+        exit();
+    }
+
+    // Validasi password menggunakan fungsi yang baru ditambahkan
+    if (!validatePassword($password)) {
+        echo "Invalid password format. Password must be at least 8 characters long.";
+        exit();
+    }
+
+
     // Persiapkan pernyataan SQL untuk mencari pengguna dengan username yang diberikan
     $stmt = $conn->prepare("SELECT * FROM users WHERE username=? AND password=?;");
     $stmt->bind_param("ss", $username, $password);
