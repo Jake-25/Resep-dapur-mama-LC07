@@ -6,14 +6,15 @@ error_reporting(E_ALL);
 
 session_start();
 
-// Sertakan konfigurasi database & validasi
+// Sertakan konfigurasi fungsi
 require('connection.php');
-require('ValidateFUnction.php');
+require('ValidateFunction.php');
+require('cryption.php');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Validasi dan sanitasi input
-    $username = htmlspecialchars($_POST["username"]);
-    $password = htmlspecialchars($_POST["password"]);
+    $username = cleanInput($_POST["username"]);
+    $password = cleanInput($_POST["password"]);
 
     if (!validateUsername($username)) {
         echo "Format nama pengguna tidak valid. Gunakan hanya huruf, angka, dan garis bawah.";
@@ -26,6 +27,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 
+    $encryptedUsername = encryptData($username, $encryptionKey);
+    $encryptedPassword = encryptData($password, $encryptionKey);
+
     // Persiapkan pernyataan SQL untuk mencari pengguna dengan username yang diberikan
     $stmt = $conn->prepare("SELECT id, username, password, session_id FROM users WHERE username=? AND password=?;");
     $stmt->bind_param("ss", $username, $password);
@@ -33,8 +37,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_result($userId, $dbUsername, $dbPassword, $storedSessionId);
     $stmt->fetch();
     $stmt->close();
-
-
 
     // Verifikasi password
     if ($dbUsername && password_verify($password, $dbPassword)) {
@@ -44,20 +46,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             session_destroy();
             echo "Anda sudah login dari perangkat atau sesi yang berbeda. Silakan login kembali.";
             exit();
+        }if (empty($storedSessionId)) {
+            $newSessionId = session_id();
+            $stmt = $conn->prepare("UPDATE users SET session_id=? WHERE id=?;");
+            $stmt->bind_param("si", $newSessionId, $userId);
+            $stmt->execute();
+            $stmt->close();
         }
 
         // Login berhasil, atur sesi atau tindakan lainnya
         $_SESSION["username"] = $dbUsername;
 
-        // Update stored session ID in the database
-        $newSessionId = session_id();
-        $stmt = $conn->prepare("UPDATE users SET session_id=? WHERE id=?;");
-        $stmt->bind_param("si", $newSessionId, $userId);
-        $stmt->execute();
-        $stmt->close();
-
-        header("Location: /profile.php"); // Redirect ke halaman profil
+        // Redirect ke halaman profil
+        header("Location: /profile.php"); 
         exit();
+
     } else {
         // Login gagal, tampilkan pesan kesalahan
         echo "Login gagal. Periksa nama pengguna dan kata sandi Anda.";
@@ -65,6 +68,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Tutup koneksi ke database
         $conn->close();
-        
+
 }
 ?>

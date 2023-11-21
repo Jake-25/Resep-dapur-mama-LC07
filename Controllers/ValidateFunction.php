@@ -15,8 +15,8 @@ function cleanInput($input) {
 
 // Fungsi validasi username
 function validateUsername($username) {
-    // Use a regular expression to validate the username format
-    $pattern = '/^[a-zA-Z0-9_]+$/';
+    //Contoh validasi: Panjang minimal 8 karakter, setidaknya satu huruf besar, satu huruf kecil, dan satu angka
+    $pattern = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/';
     return preg_match($pattern, $username);
 }
 
