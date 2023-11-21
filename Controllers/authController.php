@@ -7,9 +7,9 @@ error_reporting(E_ALL);
 session_start();
 
 // Sertakan konfigurasi fungsi
-require('./Function/connection.php');
-require('./Function/ValidateFunction.php');
-require('./Function/cryption.php');
+require('../Function/connection.php');
+require('../Function/ValidateFunction.php');
+require('../Function/cryption.php');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Validasi dan sanitasi input

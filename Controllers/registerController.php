@@ -2,9 +2,9 @@
 // registration.php
 
 // Sertakan file-file yang diperlukan
-require('./Function/connection.php');
-require('./Function/ValidateFunction.php');
-require('./Function/cryption.php');
+require('../Function/connection.php');
+require('../Function/ValidateFunction.php');
+require('../Function/cryption.php');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Ambil data dari formulir dan bersihkan input
