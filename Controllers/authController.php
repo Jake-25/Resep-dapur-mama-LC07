@@ -3,20 +3,13 @@
 
 session_start();
 
+ // Sertakan konfigurasi database
+require('connection.php');
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Validasi dan sanitasi input
     $username = htmlspecialchars($_POST["username"]);
     $password = htmlspecialchars($_POST["password"]);
-
-    // Sertakan konfigurasi database
-    require('connection.php');
-
-    // Hubungkan ke database
-    $conn = new mysqli($config['server'], $config['username'], $config['password'], $config['database']);
-
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
 
     // Persiapkan pernyataan SQL untuk mencari pengguna dengan username yang diberikan
     $stmt = $conn->prepare("SELECT * FROM users WHERE username=? AND password=?;");
