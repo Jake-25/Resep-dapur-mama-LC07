@@ -19,6 +19,21 @@
         <button type="submit">Login</button>
     </form>
 
+    <h2>Belum punya akun? Daftar di sini:</h2>
+
+    <form action="controllers/registerController.php" method="post">
+        <label for="newUsername">Username:</label>
+        <input type="text" id="newUsername" name="newUsername" required>
+
+        <label for="newPassword">Password:</label>
+        <input type="password" id="newPassword" name="newPassword" required>
+
+        <label for="confirmPassword">Confirm Password:</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" required>
+
+        <button type="submit">Daftar</button>
+    </form>
+
     <script src="assets/scripts/jquery.js"></script>
     <script src="assets/scripts/custom.js"></script>
 </body>
