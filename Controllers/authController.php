@@ -5,7 +5,7 @@ session_start();
 
  // Sertakan konfigurasi database
 require('connection.php');
-
+require('ValidateFUnction.php');
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Validasi dan sanitasi input
     $username = htmlspecialchars($_POST["username"]);
