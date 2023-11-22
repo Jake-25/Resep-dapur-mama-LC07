@@ -22,6 +22,10 @@
     <h2>Belum punya akun? Daftar di sini:</h2>
 
     <form action="controllers/registerController.php" method="post">
+
+        <label for="newEmail">Username:</label>
+        <input type="text" id="newEmail" name="newEmail" required>
+
         <label for="newUsername">Username:</label>
         <input type="text" id="newUsername" name="newUsername" required>
 

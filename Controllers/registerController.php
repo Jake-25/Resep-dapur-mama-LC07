@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $encryptedPassword = encryptData($newPassword, $encryptionKey);
 
         // Gunakan prepared statement untuk mencegah injeksi SQL
-        $stmt = $conn->prepare("INSERT INTO users (username, password, session_id) VALUES (?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO users (email, username, password, session_id) VALUES (?, ?, ?)");
         $stmt->bind_param("sss", $newUsername, $encryptedPassword, $newSessionId);
 
         // Eksekusi prepared statement
