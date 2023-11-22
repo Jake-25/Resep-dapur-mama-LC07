@@ -37,6 +37,8 @@
 
         <button type="submit">Daftar</button>
     </form>
+    
+    <a href="logout.php">Logout</a>
 
     <script src="assets/scripts/jquery.js"></script>
     <script src="assets/scripts/custom.js"></script>

@@ -1,5 +1,5 @@
 <?php
-$envFile = __DIR__ . '/.env';
+$envFile = '..\Assets\Styles\secret\key.env';
 
 if (!file_exists($envFile)) {
     die('File .env tidak ditemukan. Pastikan file .env.example sudah disalin dan diatur.');
@@ -21,6 +21,12 @@ function encryptData($data, $key)
     $ivSize = openssl_cipher_iv_length('aes-256-cbc');
     $iv = openssl_random_pseudo_bytes($ivSize);
     $encryptedData = openssl_encrypt($data, 'aes-256-cbc', $key, 0, $iv);
+
+    if ($encryptedData === false) {
+        // Handle error saat enkripsi
+        return false;
+    }
+
     return base64_encode($iv . $encryptedData);
 }
 
@@ -36,7 +42,21 @@ function decryptData($data, $key)
         return false;
     }
 
-    return openssl_decrypt($encryptedData, 'aes-256-cbc', $key, 0, $iv);
+    $decryptedData = openssl_decrypt($encryptedData, 'aes-256-cbc', $key, 0, $iv);
+
+    if ($decryptedData === false) {
+        // Handle error saat dekripsi
+        return false;
+    }
+
+    return $decryptedData;
+}
+
+function generateUniqueSessionId() {
+    // Generate a unique session ID using a combination of current timestamp and random number
+    $sessionId = md5(uniqid(mt_rand(), true));
+
+    return $sessionId;
 }
 
 

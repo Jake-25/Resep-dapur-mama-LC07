@@ -1,5 +1,5 @@
 <?php
-    require "../Config/database.php";
+    require '../Config/database.php';
     
     $conn = new mysqli(
         $config["server"],
@@ -7,3 +7,4 @@
         $config["password"],
         $config["database"]
     );
+?>

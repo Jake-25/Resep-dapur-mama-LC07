@@ -6,68 +6,60 @@ error_reporting(E_ALL);
 
 session_start();
 
-// Sertakan konfigurasi fungsi
+// Include function configurations
 require('../Function/connection.php');
 require('../Function/ValidateFunction.php');
 require('../Function/cryption.php');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Validasi dan sanitasi input
+    // Validate and sanitize input
     $username = cleanInput($_POST["username"]);
     $password = cleanInput($_POST["password"]);
 
-    if (!validateUsername($username)) {
-        echo "Format nama pengguna tidak valid. Gunakan hanya huruf, angka, dan garis bawah.";
-        exit();
-    }
+    // ... (other validations)
 
-    // Validasi password menggunakan fungsi yang baru ditambahkan
-    if (!validatePassword($password)) {
-        echo "Format kata sandi tidak valid. Kata sandi harus setidaknya 8 karakter.";
-        exit();
-    }
-
-    $encryptedUsername = encryptData($username, $encryptionKey);
-    $encryptedPassword = encryptData($password, $encryptionKey);
-
-    // Persiapkan pernyataan SQL untuk mencari pengguna dengan username yang diberikan
-    $stmt = $conn->prepare("SELECT id, username, password, session_id FROM users WHERE username=? AND password=?;");
-    $stmt->bind_param("ss", $username, $password);
+    // Prepare SQL statement to find the user with the given username
+    $stmt = $conn->prepare("SELECT id, username, password, session_id FROM users WHERE username=?");
+    $stmt->bind_param("s", $username);
     $stmt->execute();
     $stmt->bind_result($userId, $dbUsername, $dbPassword, $storedSessionId);
     $stmt->fetch();
     $stmt->close();
 
-    // Verifikasi password
-    if ($dbUsername && password_verify($password, $dbPassword)) {
+    // Verify password
+    if ($dbUsername && ($password == decryptData($dbPassword, $decryptionKey))) {
         // Check if the stored session ID matches the current session ID
         if (!empty($storedSessionId) && $storedSessionId !== session_id()) {
-            // Session ID berbeda, logout otomatis pengguna
+            // Different session ID, automatically log out the user
             session_destroy();
-            echo "Anda sudah login dari perangkat atau sesi yang berbeda. Silakan login kembali.";
-            exit();
-        }if (empty($storedSessionId)) {
-            $newSessionId = session_id();
-            $stmt = $conn->prepare("UPDATE users SET session_id=? WHERE id=?;");
-            $stmt->bind_param("si", $newSessionId, $userId);
-            $stmt->execute();
-            $stmt->close();
+            echo "You are already logged in from a different device or session. Please log in again.";
+            header("Location: ./login&registration.php");
         }
 
-        // Login berhasil, atur sesi atau tindakan lainnya
+        // Login successful, set session or other actions
         $_SESSION["username"] = $dbUsername;
 
-        // Redirect ke halaman profil
-        header("Location: /profile.php"); 
-        exit();
+        // Regenerate session ID
+        session_regenerate_id(true);
 
+        // Get the new session ID
+        $newSessionId = session_id();
+
+        // Update the session ID in the database
+        $updateStmt = $conn->prepare("UPDATE users SET session_id=? WHERE id=?");
+        $updateStmt->bind_param("si", $newSessionId, $userId);
+        $updateStmt->execute();
+        $updateStmt->close();
+
+        // Redirect to the profile page
+        header("Location: /profile.php");
+        exit();
     } else {
-        // Login gagal, tampilkan pesan kesalahan
-        echo "Login gagal. Periksa nama pengguna dan kata sandi Anda.";
+        // Login failed, display error message
+        echo "Login failed. Check your username and password.";
     }
 
-        // Tutup koneksi ke database
-        $conn->close();
-
+    // Close the database connection
+    $conn->close();
 }
 ?>
