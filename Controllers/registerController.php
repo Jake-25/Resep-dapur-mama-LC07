@@ -23,9 +23,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } elseif ($newPassword !== $confirmPassword) {
         echo "Konfirmasi password tidak sesuai.";
         // Handle kesalahan lebih lanjut jika diperlukan
-    } elseif (!validateEmail($newEmail)) {
-        echo "email tidak valid";
-    }else {
+    } elseif (!$validateEmail($newEmail)) {
+        echo "Email tidak valid.";
+    } else {
         // Mulai sesi
         session_start();
 
@@ -36,8 +36,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $encryptedPassword = encryptData($newPassword, $encryptionKey);
 
         // Gunakan prepared statement untuk mencegah injeksi SQL
-        $stmt = $conn->prepare("INSERT INTO users (email, username, password, session_id) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $newUsername, $encryptedPassword, $newSessionId);
+        $stmt = $conn->prepare("INSERT INTO users (email, username, password, session_id) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("ssss", $newEmail, $newUsername, $encryptedPassword, $newSessionId);
 
         // Eksekusi prepared statement
         if ($stmt->execute()) {
