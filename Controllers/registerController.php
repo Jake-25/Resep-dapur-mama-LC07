@@ -8,6 +8,7 @@ require('../Function/cryption.php');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Ambil data dari formulir dan bersihkan input
+    $newEmail = cleanInput($_POST["newEmail"]);
     $newUsername = cleanInput($_POST["newUsername"]);
     $newPassword = cleanInput($_POST["newPassword"]);
     $confirmPassword = cleanInput($_POST["confirmPassword"]);
@@ -22,7 +23,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } elseif ($newPassword !== $confirmPassword) {
         echo "Konfirmasi password tidak sesuai.";
         // Handle kesalahan lebih lanjut jika diperlukan
-    } else {
+    } elseif (!validateEmail($newEmail)) {
+        echo "email tidak valid";
+    }else {
         // Mulai sesi
         session_start();
 

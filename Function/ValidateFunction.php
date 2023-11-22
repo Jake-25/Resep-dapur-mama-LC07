@@ -25,4 +25,10 @@ function validatePassword($password) {
     // Check if the password meets certain criteria (e.g., minimum length)
     return strlen($password) >= 8;
 }
+
+function validateEmail($email) {
+    // Gunakan filter_var untuk memeriksa apakah email valid
+    return filter_var($email, FILTER_VALIDATE_EMAIL);
+}
+
 ?>
