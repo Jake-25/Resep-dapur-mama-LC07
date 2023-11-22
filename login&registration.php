@@ -23,7 +23,7 @@
 
     <form action="controllers/registerController.php" method="post">
 
-        <label for="newEmail">Username:</label>
+        <label for="newEmail">Email:</label>
         <input type="text" id="newEmail" name="newEmail" required>
 
         <label for="newUsername">Username:</label>
