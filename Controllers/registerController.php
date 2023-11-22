@@ -53,6 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Registrasi berhasil
                 $_SESSION['username'] = $newUsername; // Simpan informasi pengguna dalam sesi
                 echo "Pendaftaran berhasil! Silakan login.";
+                header("Location: ../login.php");
             } else {
                 // Handle kesalahan eksekusi prepared statement
                 echo "Terjadi kesalahan. Silakan coba lagi.";
@@ -67,7 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 } else {
     // Redirect jika akses langsung ke file ini tanpa melalui formulir
-    header("Location: ../index.html");
+    header("Location: ../register.php");
     exit();
 }
 

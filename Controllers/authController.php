@@ -52,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $updateStmt->close();
 
         // Redirect to the profile page
-        header("Location: /profile.php");
+        header("Location: ../index.php");
         exit();
     } else {
         // Login failed, display error message
